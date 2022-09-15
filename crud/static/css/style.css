@@ -1,0 +1,33 @@
+body {
+    background-color: ghostwhite;
+    font-family: Arial;
+}
+
+.main-block {
+    background-color: white;
+    width: 80%;
+    margin: auto;
+    padding: 30px 0 30px 0;
+    text-align: center;
+}
+
+.panel-area {
+    width: 60%;
+    margin: auto;
+    text-align: center;
+}
+
+.panel {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.btn-lg {
+    width: 200px;
+    margin-bottom: 10px;
+}
+.btn-success {
+    width: 100px;
+}
