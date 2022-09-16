@@ -16,15 +16,25 @@
 
 <body>
     <div class="main-block">
+        {% if messages %}
+            {% for msg in messages %}
+                <div class="alert alert-{% if msg.level_tag == 'error' %}danger{% else %}{{ msg.level_tag }}{% endif %} alert-dismissible fade show" role="alert">
+                    {{ msg.message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
         <div class="panel-area">
             <h1>Что вы хотите?</h1>
             <div class="panel">
-                <p><a class="btn btn-outline-primary btn-lg" href="{% url 'create' %}">Создать</a></p>
-                <p><a class="btn btn-outline-success btn-lg" href="{% url 'read' %}">Просмотреть</a></p>
-                <p><a class="btn btn-outline-warning btn-lg" href="{% url 'update' %}">Изменить</a></p>
-                <p><a class="btn btn-outline-danger btn-lg" href="{% url 'delete' %}">Удалить</a></p>
+                <p><a class="btn btn-outline-primary btn-lg" href="{% url 'create_form' %}">Создать</a></p>
+                <p><a class="btn btn-outline-success btn-lg" href="{% url 'read_form' %}">Просмотреть</a></p>
+                <p><a class="btn btn-outline-warning btn-lg" href="{% url 'update_form' %}">Изменить</a></p>
+                <p><a class="btn btn-outline-danger btn-lg" href="{% url 'delete_form' %}">Удалить</a></p>
             </div>
         </div>
+
     </div>
 </body>
 

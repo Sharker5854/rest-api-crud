@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+
+<head>
+    <meta charset='utf-8'>
+    <title>REST API</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='{% static "css/style.css" %}'>
+    <script src='{% static "js/script.js" %}'></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+  </body>
+</head>
+
+<body>
+    <div class="main-block">
+        <h1>Создание пользователя</h1>
+        <form class="user-form" action="{% url 'create' %}" method="POST">
+            {% csrf_token %}
+            <label for="usernameInput" class="form-label">Введите никнейм создаваемого пользователя:</label>
+            <p><input type="text" name="username" class="form-control form-input" id="usernameInput" placeholder="Username..."></p>
+            <label for="passwordInput" class="form-label">Придумайте пароль:</label>
+            <p><input type="password" name="password" class="form-control form-input" id="passwordInput" placeholder="Password..."></p>
+            <p><input class="btn btn-primary form-submit" type="submit" value="Создать"></p>
+        </form>
+    </div>
+</body>
+
+
+</html>

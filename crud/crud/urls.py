@@ -15,10 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from .views import index
+from .views import delete_form_view, index, create_form_view, read_form_view, update_form_view, delete_form_view
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", index, name="index"),
+    path("create-form/", create_form_view, name="create_form"),
+    path("read-form/", read_form_view, name="read_form"),
+    path("update-form/", update_form_view, name="update_form"),
+    path("delete-form/", delete_form_view, name="delete_form"),
     path("api/", include("api.urls"))
 ]

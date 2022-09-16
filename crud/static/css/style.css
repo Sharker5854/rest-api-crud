@@ -24,10 +24,19 @@ body {
     justify-content: center;
 }
 
+.user-form {
+    margin-top: 50px !important;
+    width: 40%;
+    margin: auto;
+}
+.form-input {
+    text-align: center;
+}
+.form-submit {
+    margin-top: 20px;
+}
+
 .btn-lg {
     width: 200px;
     margin-bottom: 10px;
-}
-.btn-success {
-    width: 100px;
 }
