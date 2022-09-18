@@ -19,9 +19,8 @@ def create(request):
             user_obj = User(username=request.POST["username"], password=password_hash_with_salt)
             user_obj.save()
         except ValidationError as psw_validation_exc:
-            print(psw_validation_exc)
-            return JsonResponse({"msg" : f"{str(psw_validation_exc)}"}, status=400)
-        except IntegrityError as not_unique_username_exc:
+            return JsonResponse({"msg" : str(psw_validation_exc)}, status=400)
+        except IntegrityError:
             return JsonResponse({"msg" : f"User with username '{user_obj.username}' already exists."}, status=400)
         except Exception as exc:
             print("----- Error -----\n" + str(exc) + "\n-----------------")
@@ -58,7 +57,38 @@ def read(request):
 
 
 def update(request):
-    return HttpResponse("Изменяю...")
+    new_psw = request.POST["password"]
+    if new_psw != "":
+        try:
+            validate_password(new_psw)
+            password_hash_with_salt = make_hash_with_salt(PASSWORD_SALT, new_psw)
+            user_obj = User.objects.get(id=request.POST["id"])
+            user_obj.username = request.POST["username"]
+            user_obj.password = password_hash_with_salt
+            user_obj.save()
+        except ValidationError as psw_validation_exc:
+            return JsonResponse({"msg" : str(psw_validation_exc)}, status=400)
+        except IntegrityError:
+            return JsonResponse({"msg" : f"User with username '{request.POST['username']}' already exists."}, status=400)
+        except Exception as exc:
+            print("----- Error -----\n" + str(exc) + "\n-----------------")
+            return JsonResponse({"msg" : f"Error while updating user's data."}, status=500)
+        else:
+            messages.success(request, f"Никнейм и пароль пользователя с ID={request.POST['id']} успешно изменены!")
+            return redirect(reverse("index"))
+    else:
+        try:
+            user_obj = User.objects.get(id=request.POST["id"])
+            user_obj.username = request.POST["username"]
+            user_obj.save()
+        except IntegrityError:
+            return JsonResponse({"msg" : f"User with username '{request.POST['username']}' already exists."}, status=400)
+        except Exception as exc:
+            print("----- Error -----\n" + str(exc) + "\n-----------------")
+            return JsonResponse({"msg" : f"Error while updating user's data."}, status=500)
+        else:
+            messages.success(request, f"Никнейм пользователя с ID={request.POST['id']} успешно изменён!")
+            return redirect(reverse("index"))
 
 
 def delete(request):
