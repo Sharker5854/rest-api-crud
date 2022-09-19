@@ -81,9 +81,9 @@ WSGI_APPLICATION = 'crud.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'crud',
-        'USER' : 'root',
-        'PASSWORD' : '1379',
+        'NAME': '<ИМЯ_БД>',
+        'USER' : '<ИМЯ_ПОЛЬЗОВАТЕЛЯ>',
+        'PASSWORD' : '<ПАРОЛЬ_ДЛЯ_ПОЛЬЗОВАТЕЛЯ>',
         'HOST' : 'localhost'
     }
 }

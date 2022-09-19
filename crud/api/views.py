@@ -57,39 +57,56 @@ def read(request):
 
 
 def update(request):
-    new_psw = request.POST["password"]
-    if new_psw != "":
-        try:
-            validate_password(new_psw)
-            password_hash_with_salt = make_hash_with_salt(PASSWORD_SALT, new_psw)
-            user_obj = User.objects.get(id=request.POST["id"])
-            user_obj.username = request.POST["username"]
-            user_obj.password = password_hash_with_salt
-            user_obj.save()
-        except ValidationError as psw_validation_exc:
-            return JsonResponse({"msg" : str(psw_validation_exc)}, status=400)
-        except IntegrityError:
-            return JsonResponse({"msg" : f"User with username '{request.POST['username']}' already exists."}, status=400)
-        except Exception as exc:
-            print("----- Error -----\n" + str(exc) + "\n-----------------")
-            return JsonResponse({"msg" : f"Error while updating user's data."}, status=500)
+    if request.method == "POST":
+        new_psw = request.POST["password"]
+        if new_psw != "":
+            try:
+                validate_password(new_psw)
+                password_hash_with_salt = make_hash_with_salt(PASSWORD_SALT, new_psw)
+                user_obj = User.objects.get(id=request.POST["id"])
+                user_obj.username = request.POST["username"]
+                user_obj.password = password_hash_with_salt
+                user_obj.save()
+            except ValidationError as psw_validation_exc:
+                return JsonResponse({"msg" : str(psw_validation_exc)}, status=400)
+            except IntegrityError:
+                return JsonResponse({"msg" : f"User with username '{request.POST['username']}' already exists."}, status=400)
+            except Exception as exc:
+                print("----- Error -----\n" + str(exc) + "\n-----------------")
+                return JsonResponse({"msg" : f"Error while updating user's data."}, status=500)
+            else:
+                messages.success(request, f"Никнейм и пароль пользователя с ID={request.POST['id']} успешно изменены!")
+                return redirect(reverse("index"))
         else:
-            messages.success(request, f"Никнейм и пароль пользователя с ID={request.POST['id']} успешно изменены!")
-            return redirect(reverse("index"))
+            try:
+                user_obj = User.objects.get(id=request.POST["id"])
+                user_obj.username = request.POST["username"]
+                user_obj.save()
+            except IntegrityError:
+                return JsonResponse({"msg" : f"User with username '{request.POST['username']}' already exists."}, status=400)
+            except Exception as exc:
+                print("----- Error -----\n" + str(exc) + "\n-----------------")
+                return JsonResponse({"msg" : f"Error while updating user's data."}, status=500)
+            else:
+                messages.success(request, f"Никнейм пользователя с ID={request.POST['id']} успешно изменён!")
+                return redirect(reverse("index"))
     else:
-        try:
-            user_obj = User.objects.get(id=request.POST["id"])
-            user_obj.username = request.POST["username"]
-            user_obj.save()
-        except IntegrityError:
-            return JsonResponse({"msg" : f"User with username '{request.POST['username']}' already exists."}, status=400)
-        except Exception as exc:
-            print("----- Error -----\n" + str(exc) + "\n-----------------")
-            return JsonResponse({"msg" : f"Error while updating user's data."}, status=500)
-        else:
-            messages.success(request, f"Никнейм пользователя с ID={request.POST['id']} успешно изменён!")
-            return redirect(reverse("index"))
+        return JsonResponse({"msg" : "HTTP-method must be 'POST' to interactive with this page."}, status=405)
 
 
 def delete(request):
-    return HttpResponse("Удаляю...")
+    if request.method == "POST":
+        try:
+            user_id = request.POST["id"]
+            user_obj = User.objects.get(id=user_id)
+            user_obj.delete()
+        except ObjectDoesNotExist:
+            return JsonResponse({"msg" : f"User with ID={user_id} does not exist."}, status=404)
+        except Exception as exc:
+            print("----- Error -----\n" + str(exc) + "\n-----------------")
+            return JsonResponse({"msg" : f"Error while deleting user."}, status=500)
+        else:
+            messages.warning(request, f"Пользователь с ID={user_id} удалён.")
+            return redirect(reverse("index"))
+    else:
+        return JsonResponse({"msg" : "HTTP-method must be 'POST' to interactive with this page."}, status=405)
